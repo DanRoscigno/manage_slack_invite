@@ -1,0 +1,32 @@
+name: Daily Slack Link Check
+
+on:
+  schedule:
+    # Runs automatically every single day at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allows you to also trigger it manually anytime
+
+jobs:
+  check-link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      # Bypasses missing sandbox engine issues on headless Linux runners
+      - name: Install Puppeteer Chrome Dependencies
+        run: npx puppeteer browsers install chrome
+
+      - name: Run Slack Checker Script
+        # Replace the link below with your community's active link
+        run: node index.js https://slack.com...
+
